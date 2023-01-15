@@ -85,13 +85,18 @@
 	<script src="vendor/countdowntime/moment-timezone-with-data.min.js"></script>
 	<script src="vendor/countdowntime/countdowntime.js"></script>
 	<script>
+		today = new Date()
+		target = new Date('4/14/2023')
+		timeremaining = Math.abs(target-today)
+		daysremaining = Math.floor(timeremaining/(1000*60*60*24))
+		hours = (timeremaining/(1000*60*60))-(daysremaining*24)
 		$('.cd100').countdown100({
 			/*Set Endtime here*/
 			/*Endtime must be > current time*/
 			endtimeYear: 0,
 			endtimeMonth: 0,
-			endtimeDate: 35,
-			endtimeHours: 18,
+			endtimeDate: daysremaining,
+			endtimeHours: hours,
 			endtimeMinutes: 0,
 			endtimeSeconds: 0,
 			timeZone: "" 
