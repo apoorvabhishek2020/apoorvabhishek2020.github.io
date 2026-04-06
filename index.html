@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apoorv Abhishek - Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary-blue: #0f3a82;
@@ -18,10 +19,43 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.4;
             color: var(--text-dark);
+            background-color: #f4f4f9; /* Subtle background for the webpage */
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        /* Container for the resume to make it look like a physical page on the web */
+        #resume-wrapper {
             max-width: 950px;
             margin: 0 auto;
             padding: 40px;
             background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Smart Download Button */
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background-color: #c9571e;
         }
 
         /* Header */
@@ -241,259 +275,276 @@
             color: var(--text-dark);
         }
 
-        /* --- MOBILE RESPONSIVENESS (Media Queries) --- */
+        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body {
-                padding: 20px 15px;
-            }
-
-            header {
-                flex-direction: column-reverse; /* Puts image on top */
-                text-align: center;
-                gap: 15px;
-            }
-
-            .header-left h1 {
-                font-size: 28px;
-            }
-
-            .contact-info {
-                justify-content: center;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .timeline-row {
-                flex-direction: column;
-            }
-
-            .timeline-dot {
-                display: none; /* Hide the dot on mobile to save space */
-            }
-
-            .timeline-date {
-                margin-bottom: 8px;
-            }
-
-            .timeline-date span {
-                display: inline; /* Keep location on the same line as date */
-            }
-
-            .timeline-date span::before {
-                content: " | ";
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr; /* 1 column instead of 2 */
-            }
-
-            .cert-grid {
-                grid-template-columns: 1fr; /* 1 column instead of 3 */
-            }
-
-            .project-meta {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
+            body { padding: 10px; }
+            #resume-wrapper { padding: 20px; }
+            header { flex-direction: column-reverse; text-align: center; gap: 15px; margin-top: 40px; }
+            .header-left h1 { font-size: 28px; }
+            .contact-info { justify-content: center; flex-direction: column; align-items: center; gap: 8px; }
+            .timeline-row { flex-direction: column; }
+            .timeline-dot { display: none; }
+            .timeline-date { margin-bottom: 8px; }
+            .timeline-date span { display: inline; }
+            .timeline-date span::before { content: " | "; }
+            .info-grid { grid-template-columns: 1fr; }
+            .cert-grid { grid-template-columns: 1fr; }
+            .project-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
         }
 
+        /* --- NATIVE CSS PRINT FALLBACK --- */
         @media print {
-            body { padding: 0; margin: 0 auto; width: 100%; }
-            .profile-pic { display: none; }
+            body { background-color: white; padding: 0; margin: 0; }
+            #resume-wrapper { box-shadow: none; padding: 0; max-width: 100%; margin: 0; }
+            .download-btn { display: none !important; }
+            .timeline-row, .project-block, .info-grid { page-break-inside: avoid; }
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <h1>APOORV ABHISHEK</h1>
-            <h2>Software Development Engineer - 2 | Python Backend | DevSecOps</h2>
-            <div class="contact-info">
-                <span><i class="fa-solid fa-phone"></i> +91-8989143106</span>
-                <span><i class="fa-solid fa-at"></i> <a href="mailto:apoorvabhishek2010@gmail.com">apoorvabhishek2010@gmail.com</a></span>
-                <span><i class="fa-solid fa-link"></i> <a href="https://www.linkedin.com/in/apoorvabhishek">www.linkedin.com/in/apoorvabhishek</a></span>
-                <span><i class="fa-solid fa-link"></i> <a href="https://www.apoorvabhishek.com/">https://www.apoorvabhishek.com/</a></span>
-                <span><i class="fa-solid fa-location-dot"></i> Bengaluru, India</span>
+    <button class="download-btn" onclick="generatePDF()">
+        <i class="fa-solid fa-download"></i> Download as PDF
+    </button>
+
+    <div id="resume-wrapper">
+        <header>
+            <div class="header-left">
+                <h1>APOORV ABHISHEK</h1>
+                <h2>Software Development Engineer - 2 | Python Backend | DevSecOps</h2>
+                <div class="contact-info">
+                    <span><i class="fa-solid fa-phone"></i> +91-8989143106</span>
+                    <span><i class="fa-solid fa-at"></i> <a href="mailto:apoorvabhishek2010@gmail.com">apoorvabhishek2010@gmail.com</a></span>
+                    <span><i class="fa-solid fa-link"></i> <a href="https://www.linkedin.com/in/apoorvabhishek">www.linkedin.com/in/apoorvabhishek</a></span>
+                    <span><i class="fa-solid fa-link"></i> <a href="https://www.apoorvabhishek.com/">https://www.apoorvabhishek.com/</a></span>
+                    <span><i class="fa-solid fa-location-dot"></i> Bengaluru, India</span>
+                </div>
             </div>
-        </div>
-        <img src="apoorv-pic.jpeg" alt="Apoorv Abhishek" class="profile-pic">
-    </header>
+            <img src="apoorv-pic.jpeg" alt="Apoorv Abhishek" class="profile-pic">
+        </header>
 
-    <section>
-        <h3 class="section-header">Summary</h3>
-        <p class="summary-box">
-            Results-driven Python Backend Engineer with 8 years of experience designing and delivering scalable, high-performance software solutions. Expert in architecting robust backend systems and championing DevSecOps best practices to ensure secure, reliable, and efficient software delivery. Proven ability to bridge development and operations, streamline CI/CD pipelines, and foster collaborative, high-performing teams. Passionate about leveraging AI to automate, optimize, and innovate development processes, driving continuous improvement and future-ready solutions. Eager to contribute to forward-thinking teams and tackle complex technical challenges.
-        </p>
-    </section>
+        <section>
+            <h3 class="section-header">Summary</h3>
+            <p class="summary-box">
+                Results-driven Python Backend Engineer with 8 years of experience designing and delivering scalable, high-performance software solutions. Expert in architecting robust backend systems and championing DevSecOps best practices to ensure secure, reliable, and efficient software delivery. Proven ability to bridge development and operations, streamline CI/CD pipelines, and foster collaborative, high-performing teams. Passionate about leveraging AI to automate, optimize, and innovate development processes, driving continuous improvement and future-ready solutions. Eager to contribute to forward-thinking teams and tackle complex technical challenges.
+            </p>
+        </section>
 
-    <section>
-        <h3 class="section-header">Skills</h3>
-        <div class="skill-category">Core - Competencies</div>
-        <div class="pill-container">
-            <span class="pill">Python (Flask, Django, Sanic)</span>
-            <span class="pill">REST API Design & Microservices Architecture</span>
-            <span class="pill">Flask</span>
-            <span class="pill">Django</span>
-            <span class="pill">OOP</span>
-            <span class="pill">Data Structures & Algorithms</span>
-        </div>
-        <div class="skill-category">Technology Expertise</div>
-        <div class="pill-container">
-            <span class="pill">DevSecOps & Secure SDLC</span>
-            <span class="pill">Docker</span>
-            <span class="pill">Kubernetes</span>
-            <span class="pill">Azure Cloud</span>
-            <span class="pill">OpenShift</span>
-            <span class="pill">Linux</span>
-        </div>
-    </section>
+        <section>
+            <h3 class="section-header">Skills</h3>
+            <div class="skill-category">Core - Competencies</div>
+            <div class="pill-container">
+                <span class="pill">Python (Flask, Django, Sanic)</span>
+                <span class="pill">REST API Design & Microservices Architecture</span>
+                <span class="pill">Flask</span>
+                <span class="pill">Django</span>
+                <span class="pill">OOP</span>
+                <span class="pill">Data Structures & Algorithms</span>
+            </div>
+            <div class="skill-category">Technology Expertise</div>
+            <div class="pill-container">
+                <span class="pill">DevSecOps & Secure SDLC</span>
+                <span class="pill">Docker</span>
+                <span class="pill">Kubernetes</span>
+                <span class="pill">Azure Cloud</span>
+                <span class="pill">OpenShift</span>
+                <span class="pill">Linux</span>
+            </div>
+        </section>
 
-    <section>
-        <h3 class="section-header">Experience</h3>
+        <section>
+            <h3 class="section-header">Experience</h3>
 
-        <div class="timeline-row">
-            <div class="timeline-date">03/2022 - Present <span>Bengaluru, India</span></div>
-            <div class="timeline-dot">•</div>
-            <div class="timeline-content">
-                <h4>Software Development Engineer - 2</h4>
-                <div class="org">Amadeus</div>
+            <div class="timeline-row">
+                <div class="timeline-date">03/2022 - Present <span>Bengaluru, India</span></div>
+                <div class="timeline-dot">•</div>
+                <div class="timeline-content">
+                    <h4>Software Development Engineer - 2</h4>
+                    <div class="org">Amadeus</div>
+                    <ul>
+                        <li>Led a Secure Development Lifecycle (SDL) transformation, enabling hundreds of developers to seamlessly integrate advanced security scanning tools (Fortify, BlackDuck, Prisma, RHACS, secret scanners) into CI/CD pipelines and local workflows.</li>
+                        <li>Designed and developed modern Python microservices using Flask and Sanic, implementing a dual virtual environment architecture and achieving near 100% code coverage.</li>
+                        <li>Introduced AI-driven vulnerability remediation and consolidated security reporting, significantly enhancing organizational security and streamlining developer operations.</li>
+                        <li>Collaborated internationally with cross-site teams, including an <strong>on-site engagement in Nice, France</strong>, to accelerate project delivery and foster global teamwork.</li>
+                        <li>Developed an advanced reporting and priority optimization tool for an internal service management platform, delivering multi-format analytics (pie charts, histograms) and a custom Priority Score system based on SLA and business criteria.</li>
+                        <li>Enabled substantial cost savings and improved resource allocation by empowering managers with actionable insights and precise ticket prioritization.</li>
+                        <li>Built and deployed robust features using Python (Django), Docker, and modern DevOps practices to ensure reliability and scalability.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timeline-row">
+                <div class="timeline-date">07/2017 - 03/2022 <span>Mysuru, India</span></div>
+                <div class="timeline-dot">•</div>
+                <div class="timeline-content">
+                    <h4>Technology Analyst / Senior System Engineer / System Engineer</h4>
+                    <div class="org">Infosys</div>
+                    <ul>
+                        <li>Delivered end-to-end solutions across multiple roles, progressing from System Engineer to Technology Analyst over nearly 5 years.</li>
+                        <li>Led and contributed to Python projects involving Flask REST APIs, Flask Admin, OOP, Angular UI, and integration with OpenTSDB, Kafka, NiFi, and Phoenix DB.</li>
+                        <li>Designed and implemented a system for unstructured data classification using Python, Flask, Pandas, Machine Learning, MongoDB, and Oracle DB, enabling efficient file categorization and retrieval for end users.</li>
+                        <li>Automated manual processes to boost productivity for both team and clients, leveraging Python, Machine Learning, C#, ASP.Net MVC, SQL Server, and DevOps tools (Automation Anywhere, Ansible, Splunk).</li>
+                        <li>Developed Outlook plugins, Coded UI solutions, and gained hands-on experience with ServiceNow for ITIL-based service, incident, change, and problem management.</li>
+                        <li>Acted as a consultant in the ITIL COE team for a major oil client, managing global critical applications and engaging in direct client communications.</li>
+                        <li>Recognized with the <strong>Most Valuable Player (MVP) Award (FY 19-20)</strong>, Infosys Insta Award for innovation and automation, and multiple client and management appreciations for dedication and results.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-header">Education</h3>
+            <div class="timeline-row">
+                <div class="timeline-date">08/2013 - 06/2017 <span>Guna, India</span></div>
+                <div class="timeline-dot">•</div>
+                <div class="timeline-content">
+                    <h4>B.Tech in Computer Science & Engineering</h4>
+                    <div class="org" style="color: var(--accent-orange); font-weight: normal;">Jaypee University of Engineering and Technology</div>
+                    <p style="font-size: 12.5px; margin: 4px 0; color: var(--text-light);">GPA <strong style="color: var(--accent-orange);">7.2</strong> / 10</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-header">Interests</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fa-solid fa-star"></i>
+                    <h5>AI Enthusiast</h5>
+                    <p>Keen interest in staying at the forefront of AI advancements and applying them to real-world engineering challenges.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <h5>Competitive Programming</h5>
+                    <p>Active participant in coding contests within the organisation to sharpen algorithms and problem-solving skills.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-head-side-virus"></i>
+                    <h5>Knowledge Sharing</h5>
+                    <p>Frequently conduct knowledge-sharing sessions, simplifying advanced topics and fostering a culture of learning and collaboration.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-header">Key Achievements</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fa-solid fa-heart"></i>
+                    <h5>Outstanding Performer at Amadeus</h5>
+                    <p>Successfully led the project from India, collaborating closely with the team in Nice, France, to deliver all objectives on time and ensure seamless integration across international teams.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-award"></i>
+                    <h5>Employee of the Quarter Award at Amadeus</h5>
+                    <p>Successfully architected and deployed security microservices in Azure Cloud, integrating a diverse set of technologies to deliver a robust and scalable solution.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-medal"></i>
+                    <h5>Most Valuable Player Award 2021 (Infosys)</h5>
+                    <p>Awarded for quick and quality delivery of product</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h5>Most Valuable Player Award 2019 (Infosys)</h5>
+                    <p>Awarded for quick learning and Implementation of product independently</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-header">Certifications</h3>
+            <div class="cert-grid">
+                <div class="cert-item">Microsoft Azure Certified Developer</div>
+                <div class="cert-item">Microsoft Azure Certified AI Practitioner</div>
+                <div class="cert-item">Microsoft Certified Python Developer</div>
+                <div class="cert-item">SAFe 5 (Scaled Agile Framework) - Practitioner</div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-header">Projects</h3>
+            <div class="project-block">
+                <h4 class="project-title">Enterprise Secure Development Lifecycle (SDL) Transformation</h4>
+                <div class="project-meta">
+                    <span><i class="fa-regular fa-calendar"></i> 01/2024 - Present</span>
+                    <span><i class="fa-solid fa-location-dot"></i> Amadeus</span>
+                </div>
                 <ul>
-                    <li>Led a Secure Development Lifecycle (SDL) transformation, enabling hundreds of developers to seamlessly integrate advanced security scanning tools (Fortify, BlackDuck, Prisma, RHACS, secret scanners) into CI/CD pipelines and local workflows.</li>
-                    <li>Designed and developed modern Python microservices using Flask and Sanic, implementing a dual virtual environment architecture and achieving near 100% code coverage.</li>
-                    <li>Introduced AI-driven vulnerability remediation and consolidated security reporting, significantly enhancing organizational security and streamlining developer operations.</li>
-                    <li>Collaborated internationally with cross-site teams, including an <strong>on-site engagement in Nice, France</strong>, to accelerate project delivery and foster global teamwork.</li>
-                    <li>Developed an advanced reporting and priority optimization tool for an internal service management platform, delivering multi-format analytics (pie charts, histograms) and a custom Priority Score system based on SLA and business criteria.</li>
-                    <li>Enabled substantial cost savings and improved resource allocation by empowering managers with actionable insights and precise ticket prioritization.</li>
-                    <li>Built and deployed robust features using Python (Django), Docker, and modern DevOps practices to ensure reliability and scalability.</li>
+                    <li>Key contributor to a company-wide SDL initiative, embedding security into every developer’s workflow and enabling seamless use of advanced security scanners (Fortify, BlackDuck, Prisma, RHACS, secret scanners) without requiring deep security expertise.</li>
+                    <li>Designed and developed modern Python microservices and APIs using Flask and Sanic, implementing a dual virtual environment architecture for robust dependency management and near 100% code coverage with strict typing.</li>
+                    <li>Automated integration of security scanning into both CI/CD pipelines and local developer environments, significantly improving security adoption and developer productivity.</li>
+                    <li>Pioneered AI-driven features for vulnerability remediation and consolidated reporting, streamlining the remediation process and enhancing security visibility.</li>
+                    <li>Deployed scalable, resilient solutions across OpenShift, Kubernetes, and Azure Cloud, leveraging modern deployment architectures for high availability and performance.</li>
                 </ul>
+                <div class="project-skills">Skills: Python, Flask, Sanic, DevSecOps, Cross-team Collaboration</div>
             </div>
-        </div>
 
-        <div class="timeline-row">
-            <div class="timeline-date">07/2017 - 03/2022 <span>Mysuru, India</span></div>
-            <div class="timeline-dot">•</div>
-            <div class="timeline-content">
-                <h4>Technology Analyst / Senior System Engineer / System Engineer</h4>
-                <div class="org">Infosys</div>
+            <div class="project-block">
+                <h4 class="project-title">Data-Driven Service Management & Priority Optimization Tool</h4>
+                <div class="project-meta">
+                    <span><i class="fa-regular fa-calendar"></i> 03/2022 - 12/2023</span>
+                    <span><i class="fa-solid fa-location-dot"></i> Amadeus</span>
+                </div>
                 <ul>
-                    <li>Delivered end-to-end solutions across multiple roles, progressing from System Engineer to Technology Analyst over nearly 5 years.</li>
-                    <li>Led and contributed to Python projects involving Flask REST APIs, Flask Admin, OOP, Angular UI, and integration with OpenTSDB, Kafka, NiFi, and Phoenix DB.</li>
-                    <li>Designed and implemented a system for unstructured data classification using Python, Flask, Pandas, Machine Learning, MongoDB, and Oracle DB, enabling efficient file categorization and retrieval for end users.</li>
-                    <li>Automated manual processes to boost productivity for both team and clients, leveraging Python, Machine Learning, C#, ASP.Net MVC, SQL Server, and DevOps tools (Automation Anywhere, Ansible, Splunk).</li>
-                    <li>Developed Outlook plugins, Coded UI solutions, and gained hands-on experience with ServiceNow for ITIL-based service, incident, change, and problem management.</li>
-                    <li>Acted as a consultant in the ITIL COE team for a major oil client, managing global critical applications and engaging in direct client communications.</li>
-                    <li>Recognized with the <strong>Most Valuable Player (MVP) Award (FY 19-20)</strong>, Infosys Insta Award for innovation and automation, and multiple client and management appreciations for dedication and results.</li>
+                    <li>Spearheaded the development of an advanced reporting tool for the company’s internal service management platform (similar to ServiceNow), transforming how managers and supervisors analyze and visualize ticket data (PTR, IR) with dynamic charts and histograms.</li>
+                    <li>Engineered flexible data exploration features using Django, enabling users to apply complex filters, create custom groupings, and perform in-depth analysis across multiple ticket types.</li>
+                    <li>Designed and implemented a Priority Score algorithm that intelligently ranked tickets based on SLA and organizational criteria, driving significant cost savings by enabling precise prioritization and optimized resource allocation.</li>
+                    <li>Ensured robust, scalable deployments using Docker and modern DevOps tools, delivering a reliable and maintainable solution across environments.</li>
                 </ul>
+                <div class="project-skills">Skills: Python, Django, Django REST Framework, Docker, WebSocket</div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
-    <section>
-        <h3 class="section-header">Education</h3>
-        <div class="timeline-row">
-            <div class="timeline-date">08/2013 - 06/2017 <span>Guna, India</span></div>
-            <div class="timeline-dot">•</div>
-            <div class="timeline-content">
-                <h4>B.Tech in Computer Science & Engineering</h4>
-                <div class="org" style="color: var(--accent-orange); font-weight: normal;">Jaypee University of Engineering and Technology</div>
-                <p style="font-size: 12.5px; margin: 4px 0; color: var(--text-light);">GPA <strong style="color: var(--accent-orange);">7.2</strong> / 10</p>
-            </div>
-        </div>
-    </section>
+    <script>
+        function generatePDF() {
+            const btn = document.querySelector('.download-btn');
+            const originalText = btn.innerHTML;
 
-    <section>
-        <h3 class="section-header">Interests</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <i class="fa-solid fa-star"></i>
-                <h5>AI Enthusiast</h5>
-                <p>Keen interest in staying at the forefront of AI advancements and applying them to real-world engineering challenges.</p>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-lightbulb"></i>
-                <h5>Competitive Programming</h5>
-                <p>Active participant in coding contests within the organisation to sharpen algorithms and problem-solving skills.</p>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-head-side-virus"></i>
-                <h5>Knowledge Sharing</h5>
-                <p>Frequently conduct knowledge-sharing sessions, simplifying advanced topics and fostering a culture of learning and collaboration.</p>
-            </div>
-        </div>
-    </section>
+            // 1. Change button to show loading state
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
 
-    <section>
-        <h3 class="section-header">Key Achievements</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <i class="fa-solid fa-heart"></i>
-                <h5>Outstanding Performer at Amadeus</h5>
-                <p>Successfully led the project from India, collaborating closely with the team in Nice, France, to deliver all objectives on time and ensure seamless integration across international teams.</p>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-award"></i>
-                <h5>Employee of the Quarter Award at Amadeus</h5>
-                <p>Successfully architected and deployed security microservices in Azure Cloud, integrating a diverse set of technologies to deliver a robust and scalable solution.</p>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-medal"></i>
-                <h5>Most Valuable Player Award 2021 (Infosys)</h5>
-                <p>Awarded for quick and quality delivery of product</p>
-            </div>
-            <div class="info-item">
-                <i class="fa-solid fa-bolt"></i>
-                <h5>Most Valuable Player Award 2019 (Infosys)</h5>
-                <p>Awarded for quick learning and Implementation of product independently</p>
-            </div>
-        </div>
-    </section>
+            // 2. Prepare the element
+            const element = document.getElementById('resume-wrapper');
+            element.style.boxShadow = 'none';
+            element.style.maxWidth = '100%';
 
-    <section>
-        <h3 class="section-header">Certifications</h3>
-        <div class="cert-grid">
-            <div class="cert-item">Microsoft Azure Certified Developer</div>
-            <div class="cert-item">Microsoft Azure Certified AI Practitioner</div>
-            <div class="cert-item">Microsoft Certified Python Developer</div>
-            <div class="cert-item">SAFe 5 (Scaled Agile Framework) - Practitioner</div>
-        </div>
-    </section>
+            // 3. Configuration
+            const opt = {
+                margin:       [10, 0, 10, 0],
+                filename:     'Apoorv_Abhishek_Resume.pdf',
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, allowTaint: true }, // Added allowTaint to help with local images
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-    <section>
-        <h3 class="section-header">Projects</h3>
-        <div class="project-block">
-            <h4 class="project-title">Enterprise Secure Development Lifecycle (SDL) Transformation</h4>
-            <div class="project-meta">
-                <span><i class="fa-regular fa-calendar"></i> 01/2024 - Present</span>
-                <span><i class="fa-solid fa-location-dot"></i> Amadeus</span>
-            </div>
-            <ul>
-                <li>Key contributor to a company-wide SDL initiative, embedding security into every developer’s workflow and enabling seamless use of advanced security scanners (Fortify, BlackDuck, Prisma, RHACS, secret scanners) without requiring deep security expertise.</li>
-                <li>Designed and developed modern Python microservices and APIs using Flask and Sanic, implementing a dual virtual environment architecture for robust dependency management and near 100% code coverage with strict typing.</li>
-                <li>Automated integration of security scanning into both CI/CD pipelines and local developer environments, significantly improving security adoption and developer productivity.</li>
-                <li>Pioneered AI-driven features for vulnerability remediation and consolidated reporting, streamlining the remediation process and enhancing security visibility.</li>
-                <li>Deployed scalable, resilient solutions across OpenShift, Kubernetes, and Azure Cloud, leveraging modern deployment architectures for high availability and performance.</li>
-            </ul>
-            <div class="project-skills">Skills: Python, Flask, Sanic, DevSecOps, Cross-team Collaboration</div>
-        </div>
+            // 4. Generate PDF with error handling
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore original styles
+                element.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+                element.style.maxWidth = '950px';
 
-        <div class="project-block">
-            <h4 class="project-title">Data-Driven Service Management & Priority Optimization Tool</h4>
-            <div class="project-meta">
-                <span><i class="fa-regular fa-calendar"></i> 03/2022 - 12/2023</span>
-                <span><i class="fa-solid fa-location-dot"></i> Amadeus</span>
-            </div>
-            <ul>
-                <li>Spearheaded the development of an advanced reporting tool for the company’s internal service management platform (similar to ServiceNow), transforming how managers and supervisors analyze and visualize ticket data (PTR, IR) with dynamic charts and histograms.</li>
-                <li>Engineered flexible data exploration features using Django, enabling users to apply complex filters, create custom groupings, and perform in-depth analysis across multiple ticket types.</li>
-                <li>Designed and implemented a Priority Score algorithm that intelligently ranked tickets based on SLA and organizational criteria, driving significant cost savings by enabling precise prioritization and optimized resource allocation.</li>
-                <li>Ensured robust, scalable deployments using Docker and modern DevOps tools, delivering a reliable and maintainable solution across environments.</li>
-            </ul>
-            <div class="project-skills">Skills: Python, Django, Django REST Framework, Docker, WebSocket</div>
-        </div>
-    </section>
+                // Restore button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }).catch(error => {
+                // If it fails locally, show an alert
+                alert("It looks like your browser blocked the PDF generation because the file is opened locally (file:///). It will work perfectly once deployed to GitHub Pages!");
 
+                // Restore styles
+                element.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+                element.style.maxWidth = '950px';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+        }
+    </script>
 </body>
 </html>
