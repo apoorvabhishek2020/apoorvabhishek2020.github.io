@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apoorv Abhishek - Portfolio</title>
+    <title>Apoorv Abhishek - Resume</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -239,6 +239,64 @@
             font-size: 12.5px;
             margin-top: 8px;
             color: var(--text-dark);
+        }
+
+        /* --- MOBILE RESPONSIVENESS (Media Queries) --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            header {
+                flex-direction: column-reverse; /* Puts image on top */
+                text-align: center;
+                gap: 15px;
+            }
+
+            .header-left h1 {
+                font-size: 28px;
+            }
+
+            .contact-info {
+                justify-content: center;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .timeline-row {
+                flex-direction: column;
+            }
+
+            .timeline-dot {
+                display: none; /* Hide the dot on mobile to save space */
+            }
+
+            .timeline-date {
+                margin-bottom: 8px;
+            }
+
+            .timeline-date span {
+                display: inline; /* Keep location on the same line as date */
+            }
+
+            .timeline-date span::before {
+                content: " | ";
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr; /* 1 column instead of 2 */
+            }
+
+            .cert-grid {
+                grid-template-columns: 1fr; /* 1 column instead of 3 */
+            }
+
+            .project-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
         }
 
         @media print {
